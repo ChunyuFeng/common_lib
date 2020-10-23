@@ -15,7 +15,8 @@
 #include <vector>
 #include <map>
 #include <algorithm>
-
+//#include <pcl/conversions.h>
+#include <pcl_conversions/pcl_conversions.h> //pcl::toROSMsg
 #include "common/msgs/autosense_msgs/PointCloud2Array.h"
 #include "common/msgs/autosense_msgs/TrackingFixedTrajectoryArray.h"
 #include "common/msgs/autosense_msgs/TrackingObjectArray.h"
@@ -25,6 +26,7 @@
 #include "common/transform.hpp"     // common::transform::transformPointCloud
 #include "common/types/object.hpp"  // ObjectPtr
 #include "common/types/type.h"
+
 
 namespace autosense {
 namespace common {
@@ -197,6 +199,7 @@ static void publishPointCloudArray(const ros::Publisher &publisher,
  * @param header
  * @param color
  * @param objects
+ * @param output search_area
  * @param trans
  */
 static void publishObjectsMarkers(
@@ -204,6 +207,7 @@ static void publishObjectsMarkers(
     const std_msgs::Header &header,
     const std_msgs::ColorRGBA &color,
     const std::vector<ObjectPtr> &objects_array,
+    Eigen::Vector3d search_area[4],
     const Eigen::Matrix4d &trans = Eigen::Matrix4d::Zero()) {
     // clear all markers before
     visualization_msgs::MarkerArray empty_markers;
@@ -278,6 +282,17 @@ static void publishObjectsMarkers(
             bottom_quad[5](0), bottom_quad[5](1), bottom_quad[5](2),
             bottom_quad[6](0), bottom_quad[6](1), bottom_quad[6](2),
             bottom_quad[7](0), bottom_quad[7](1), bottom_quad[7](2);
+
+        // search area for obstacle fusion
+        // A --> B --> C --> D clockwise
+        // A(-half_l, -half_w)
+        search_area[0] = center + 2 * ldir * -half_l + 2 * odir * -half_w;
+        // B(-half_l, half_w)
+        search_area[1] = center + 2 * ldir * -half_l + 2 * odir * half_w;
+        // C(half_l, half_w)
+        search_area[2] = center + 2 * ldir * half_l + 2 * odir * half_w;
+        // D(half_l, -half_w)
+        search_area[3] = center + 2 * ldir * half_l + 2 * odir * -half_w;
 
         visualization_msgs::Marker box, dir_arrow;
         box.header = dir_arrow.header = header;

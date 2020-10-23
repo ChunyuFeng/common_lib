@@ -49,15 +49,28 @@ typedef pcl::PointCloud<PointD> PointDCloud;
 typedef PointDCloud::Ptr PointDCloudPtr;
 typedef PointDCloud::ConstPtr PointDCloudConstPtr;
 
+///// @brief Object classify type
+//typedef enum {
+//    PEDESTRIAN = 0x01,
+//    CAR = 0x02,
+//    TRUCK = 0x04,
+//    CYCLIST = 0x10,
+//    DONTCARE = 0x20,
+//    CARE = PEDESTRIAN | CAR | TRUCK | CYCLIST,
+//    PEDESTRIAN_CAR = PEDESTRIAN | CAR
+//} ObjectType;
+
 /// @brief Object classify type
 typedef enum {
-    PEDESTRIAN = 0x01,
-    CAR = 0x02,
-    TRUCK = 0x04,
-    CYCLIST = 0x10,
-    DONTCARE = 0x20,
-    CARE = PEDESTRIAN | CAR | TRUCK | CYCLIST,
-    PEDESTRIAN_CAR = PEDESTRIAN | CAR
+    PEDESTRAIN = 0x01,
+    VEHICLE = 0x02,
+    BICYCLE = 0x03,
+    CONE = 0x04,
+    WATERFILLEDBARRIER = 0x08,
+    RAIL = 0x10,
+    OTHER = 0x20,
+    CARE = PEDESTRAIN | VEHICLE | BICYCLE | CONE | WATERFILLEDBARRIER,
+    PEDESTRIAN_VEHICLE = PEDESTRAIN | VEHICLE
 } ObjectType;
 
 typedef uint32_t IdType;
